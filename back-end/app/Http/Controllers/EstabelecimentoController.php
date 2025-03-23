@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Estabelecimento;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
 
 class EstabelecimentoController extends Controller
 {
@@ -30,15 +32,20 @@ class EstabelecimentoController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nome' => 'required|string|max:255',
-            'endereco' => 'required|string|max:255', // Validação do endereço
+            'endereco' => 'required|string|max:255',
         ]);
-
+    
+        // Log para verificar os dados recebidos
+        Log::info('Recebendo atualização:', $validated);
+    
         $estabelecimento = Estabelecimento::findOrFail($id);
-        $estabelecimento->update($request->all());
+        $estabelecimento->update($validated);
+    
         return response()->json($estabelecimento);
     }
+    
 
     public function destroy($id)
     {

@@ -21,8 +21,8 @@ Route::resource('estabelecimentos', EstabelecimentoController::class);
 Route::resource('vendas', VendaController::class);
 
 // Vendas -> Produtos
-Route::prefix('vendas/{venda}')->group(function () {
+Route::prefix('vendas/{venda_id}')->group(function () {
     Route::post('produtos', [VendaProdutoController::class, 'adicionarProduto']);
-    Route::put('produtos/{produto}', [VendaProdutoController::class, 'atualizarProduto']);
-    Route::delete('produtos/{produto}', [VendaProdutoController::class, 'removerProduto']);
+    Route::put('produtos/{produto_id}', [VendaProdutoController::class, 'atualizarProduto']);
+    Route::delete('produtos/{produto_id}', [VendaProdutoController::class, 'removerProduto']);
 });
