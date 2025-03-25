@@ -1,6 +1,6 @@
 # Setup Front-End Web com React
 
-## Passo a Passo
+Com o projeto clonado
 
 Acesse as pastas 
 
