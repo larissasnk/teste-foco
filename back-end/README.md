@@ -71,3 +71,5 @@ Acesse o projeto
 
 Ao clonar o repositório, o usuário acessará a pasta `back-end` e poderá subir o container conforme o passo a passo.
 
+[Link para acessar a documentação da api](http://localhost:8989/api/documentation#/)
+
