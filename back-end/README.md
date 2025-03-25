@@ -7,11 +7,14 @@ Clone Repositório
 ```sh
 git clone https://github.com/larissasnk/teste-foco.git
 ```
+Acesse a pasta do projeto principal e logo em seguida acesse a pasta do back-end
 ```sh
 cd teste-foco
-cd back-end
 ```
 
+```sh
+cd back-end
+```
 
 Crie o Arquivo .env
 ```sh
