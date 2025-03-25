@@ -16,6 +16,7 @@ export default function TelaEstabelecimento({navigation}) {
 
   const API_URL = "http://172.23.96.1:8989/api/estabelecimentos";
 
+  // Função para buscar estabelecimentos
   useEffect(() => {
     buscarEstabelecimentos();
   }, []);
@@ -35,6 +36,7 @@ export default function TelaEstabelecimento({navigation}) {
     }
   };
 
+  // Função para adicionar um novo estabelecimento
   const adicionarEstabelecimento = async (nome, endereco) => {
     console.log("Tentando adicionar estabelecimento:", nome, endereco);
 
@@ -52,6 +54,7 @@ export default function TelaEstabelecimento({navigation}) {
     }
   };
 
+  // Função para atualizar um estabelecimento
   const atualizarEstabelecimento = async (id, nome, endereco) => {
     if (!id || !nome || !endereco) {
       console.error("Erro: Alguns campos estão indefinidos!", {id, nome, endereco});
@@ -77,6 +80,7 @@ export default function TelaEstabelecimento({navigation}) {
     }
   };
 
+  // Função para excluir um estabelecimento
   const deletarEstabelecimento = async id => {
     Alert.alert("Confirmar Exclusão", "Tem certeza que deseja excluir este estabelecimento?", [
       {

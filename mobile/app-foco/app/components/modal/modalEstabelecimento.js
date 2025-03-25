@@ -2,8 +2,8 @@ import React, {useState, useEffect} from "react";
 import {Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, Alert} from "react-native";
 
 const ModalEstabelecimento = ({
-  modalVisivel, 
-  setModalVisivel, 
+  modalVisivel,
+  setModalVisivel,
   adicionarEstabelecimento,
   atualizarEstabelecimento,
   deletarEstabelecimento,
@@ -19,41 +19,47 @@ const ModalEstabelecimento = ({
     if (modo === "editar" && estabelecimento) {
       setNome(estabelecimento.nome);
       setEndereco(estabelecimento.endereco);
+      console.log("Modal para edição - Estabelecimento:", estabelecimento);
     } else {
       setNome("");
       setEndereco("");
+      console.log("Modal para adicionar um novo estabelecimento.");
     }
   }, [modo, estabelecimento]);
 
-
   const salvar = () => {
+    console.log("Tentando salvar estabelecimento:", nome, endereco);
 
     const nomeVazio = nome.trim() === "";
     const enderecoVazio = endereco.trim() === "";
 
-    setErroNome(nomeVazio); 
-    setErroEndereco(enderecoVazio); 
+    setErroNome(nomeVazio);
+    setErroEndereco(enderecoVazio);
 
     if (nomeVazio || enderecoVazio) {
       Alert.alert("Erro", "Preencha todos os campos corretamente!");
+      console.log("Erro: campos vazios.");
       return;
     }
 
-
+    // Se estiver no modo de adicionar, chama a função de adicionar, caso contrário, atualiza
     if (modo === "adicionar") {
+      console.log("Modo adicionar: Enviando dados para adicionar.");
       adicionarEstabelecimento(nome, endereco);
     } else if (modo === "editar") {
-      atualizarEstabelecimento(estabelecimento.id, nome, endereco); 
+      console.log("Modo editar: Enviando dados para atualização.");
+      atualizarEstabelecimento(estabelecimento.id, nome, endereco);
     }
 
- 
+    // Após salvar, fecha o modal e limpa os campos
     setModalVisivel(false);
     setNome("");
     setEndereco("");
+    console.log("Modal fechado e campos resetados.");
   };
 
-
   const cancelar = () => {
+    console.log("Cancelar ação no modal.");
     setModalVisivel(false);
     setNome("");
     setEndereco("");
@@ -69,9 +75,8 @@ const ModalEstabelecimento = ({
             {modo === "adicionar" ? "Novo Estabelecimento" : "Editar Estabelecimento"}
           </Text>
 
-
           <TextInput
-            style={[estilos.input, erroNome && estilos.inputErro]} 
+            style={[estilos.input, erroNome && estilos.inputErro]}
             placeholder="Nome do Estabelecimento"
             value={nome}
             onChangeText={setNome}
@@ -79,13 +84,12 @@ const ModalEstabelecimento = ({
           {erroNome && <Text style={estilos.textoErro}>Preencha o nome do estabelecimento!</Text>}
 
           <TextInput
-            style={[estilos.input, erroEndereco && estilos.inputErro]} 
+            style={[estilos.input, erroEndereco && estilos.inputErro]}
             placeholder="Endereço"
             value={endereco}
             onChangeText={setEndereco}
           />
           {erroEndereco && <Text style={estilos.textoErro}>Preencha o endereço do estabelecimento!</Text>}
-
 
           <View style={estilos.botoesModal}>
             <TouchableOpacity style={estilos.botaoCancelar} onPress={cancelar}>
