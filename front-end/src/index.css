@@ -1,0 +1,10 @@
+@import 'tailwindcss';
+@import 'tailwindcss/utilities';
+
+
+:root {
+  --cor-azul-claro: #1E90FF;
+  --cor-azul-escuro: #4682B4;
+  --cor-fundo-claro: #F0F4F8;
+  --espaco-padrao: 1rem;
+}
