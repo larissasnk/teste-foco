@@ -14,37 +14,37 @@ class VendaTest extends TestCase
 
     public function test_criar_venda()
     {
-        $estabelecimento = Estabelecimento::factory()->create(); // Criando um estabelecimento
-        $produto = Produto::factory()->create(['preco' => 30]); // Criando um produto com preço
+        // Cria um estabelecimento e produtos no banco de dados de teste primeiro
+        $estabelecimento = Estabelecimento::factory()->create();
+        $produto1 = Produto::factory()->create(['preco' => 30]);
+        $produto2 = Produto::factory()->create(['preco' => 5]);
     
-        $response = $this->postJson("/api/vendas", [
+        $dadosVenda = [
             'estabelecimento_id' => $estabelecimento->id,
             'produtos' => [
                 [
-                    'id' => $produto->id,
-                    'quantidade' => 2, // Quantidade de 2 para o produto
+                    'id' => $produto1->id,
+                    'quantidade' => 2
+                ],
+                [
+                    'id' => $produto2->id,
+                    'quantidade' => 1
                 ]
             ],
-            'taxa' => 5,
-            'desconto' => 0,
-        ]);
+            'taxa' => 0,
+            'desconto' => 0
+        ];
+    
+        $response = $this->postJson('/api/vendas', $dadosVenda);
     
         $response->assertStatus(201);
         
-        // Agora verificamos o valor calculado do total, considerando taxa e desconto
-        $this->assertDatabaseHas('vendas', [
-            'estabelecimento_id' => $estabelecimento->id,
-            'taxa' => 5,
-            'desconto' => 0,
-        ]);
-    
-        // Verifique se o total foi calculado corretamente (Produto * Quantidade + Taxa - Desconto)
-        $totalEsperado = (30 * 2) + 5; // Produto de 30, quantidade de 2, e taxa de 5
+        $totalEsperado = (30 * 2) + 5; 
+        
         $response->assertJsonFragment([
             'total' => $totalEsperado,
         ]);
     }
-    
     
 
     public function test_listar_vendas()

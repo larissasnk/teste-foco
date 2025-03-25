@@ -6,9 +6,11 @@ use App\Models\Venda;
 use App\Models\Produto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class VendaProdutoController extends Controller
 {
+    // Adiciona um produto à venda.
     public function adicionarProduto(Request $request, $venda_id)
     {
         $request->validate([
@@ -21,6 +23,8 @@ class VendaProdutoController extends Controller
             $venda = Venda::findOrFail($venda_id);
             $produto = Produto::findOrFail($request->produto_id);
             $subtotal = $produto->preco * $request->quantidade;
+
+            Log::info('Adicionando produto à venda: ', ['venda_id' => $venda_id, 'produto_id' => $produto->id, 'quantidade' => $request->quantidade]);
 
             $venda->produtos()->attach($produto->id, [
                 'quantidade' => $request->quantidade,
@@ -35,10 +39,12 @@ class VendaProdutoController extends Controller
             return response()->json($venda->load('produtos'), 201);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Erro ao adicionar produto à venda: ', ['error' => $e->getMessage()]);
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
+    // Atualiza as informações de um produto na venda.
     public function atualizarProduto(Request $request, $venda_id, $produto_id)
     {
         $request->validate([
@@ -61,6 +67,8 @@ class VendaProdutoController extends Controller
             $subtotalNovo = $produto->preco * $request->quantidade;
             $diferenca = $subtotalNovo - $subtotalAnterior;
 
+            Log::info('Atualizando produto na venda: ', ['venda_id' => $venda_id, 'produto_id' => $produto_id, 'quantidade' => $request->quantidade]);
+
             $venda->produtos()->updateExistingPivot($produto_id, [
                 'quantidade' => $request->quantidade,
                 'subtotal' => $subtotalNovo,
@@ -72,10 +80,12 @@ class VendaProdutoController extends Controller
             return response()->json($venda->load('produtos'));
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Erro ao atualizar produto na venda: ', ['error' => $e->getMessage()]);
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
+    // Remove um produto da venda.
     public function removerProduto($venda_id, $produto_id)
     {
         DB::beginTransaction();
@@ -91,6 +101,8 @@ class VendaProdutoController extends Controller
             $subtotal = $produtoVenda->pivot->subtotal;
             $venda->update(['total' => ($venda->total - $subtotal)]);
 
+            Log::info('Removendo produto da venda: ', ['venda_id' => $venda_id, 'produto_id' => $produto_id]);
+
             // Remove o produto da venda
             $venda->produtos()->detach($produto_id);
 
@@ -98,6 +110,7 @@ class VendaProdutoController extends Controller
             return response()->json($venda->load('produtos'));
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Erro ao remover produto da venda: ', ['error' => $e->getMessage()]);
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

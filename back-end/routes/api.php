@@ -6,10 +6,7 @@ use App\Http\Controllers\EstabelecimentoController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\VendaController;
 use App\Http\Controllers\VendaProdutoController;
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+use App\Http\Controllers\DashboardController;
 
 // Produtos
 Route::resource('produtos', ProdutoController::class);
@@ -26,3 +23,6 @@ Route::prefix('vendas/{venda_id}')->group(function () {
     Route::put('produtos/{produto_id}', [VendaProdutoController::class, 'atualizarProduto']);
     Route::delete('produtos/{produto_id}', [VendaProdutoController::class, 'removerProduto']);
 });
+
+// Dashboard
+Route::get('/dashboard/totais', [DashboardController::class, 'totais']);
