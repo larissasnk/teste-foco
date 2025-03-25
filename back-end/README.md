@@ -1,9 +1,9 @@
 
 # Setup Docker Laravel 10 com PHP 8.1
 
-### Passo a passo
+Com o projeto clonado
 
-Acesse a pasta do projeto principal e logo em seguida acesse a pasta do back-end
+Acesse a pasta 
 ```sh
 cd teste-foco
 ```
