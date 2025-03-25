@@ -7,10 +7,12 @@ import ModalProduto from "../components/modal/modalProduto";
 import axios from "axios";
 import {BlurView} from "expo-blur";
 
+// URLs da API
 const URL_API = "http://172.23.96.1:8989/api/produtos";
 const URL_ESTABELECIMENTOS = "http://172.23.96.1:8989/api/estabelecimentos";
 
 export default function TelaProduto({navigation}) {
+  // Estado para gerenciar os dados de produtos e estabelecimentos
   const [produtos, setProdutos] = useState([]);
   const [estabelecimentos, setEstabelecimentos] = useState([]);
   const [modalVisivel, setModalVisivel] = useState(false);
@@ -18,11 +20,13 @@ export default function TelaProduto({navigation}) {
   const [produtoAtual, setProdutoAtual] = useState(null);
   const [carregando, setCarregando] = useState(false);
 
+  // Efeito para buscar os dados quando o componente é montado
   useEffect(() => {
     buscarProdutos();
     buscarEstabelecimentos();
   }, []);
 
+  // Função para buscar os produtos na API
   const buscarProdutos = async () => {
     setCarregando(true);
     try {
@@ -36,6 +40,7 @@ export default function TelaProduto({navigation}) {
     }
   };
 
+  // Função para buscar os estabelecimentos na API
   const buscarEstabelecimentos = async () => {
     try {
       const resposta = await axios.get(URL_ESTABELECIMENTOS);
@@ -46,6 +51,7 @@ export default function TelaProduto({navigation}) {
     }
   };
 
+  // Função para adicionar um novo produto
   const adicionarProduto = async (nome, preco, estoque, estabelecimentoId) => {
     setCarregando(true);
     try {
@@ -61,6 +67,7 @@ export default function TelaProduto({navigation}) {
     }
   };
 
+  // Função para atualizar um produto
   const atualizarProduto = async (id, nome, preco, estoque, estabelecimentoId) => {
     setCarregando(true);
     try {
@@ -82,6 +89,7 @@ export default function TelaProduto({navigation}) {
     }
   };
 
+  // Função para deletar um produto
   const deletarProduto = async id => {
     Alert.alert("Confirmar Exclusão", "Tem certeza que deseja excluir este produto?", [
       {
@@ -109,6 +117,7 @@ export default function TelaProduto({navigation}) {
     ]);
   };
 
+  // Função para editar um produto
   const editarProduto = item => {
     setProdutoAtual(item);
     setModo("editar");
@@ -117,6 +126,7 @@ export default function TelaProduto({navigation}) {
 
   return (
     <ImageBackground source={require("../../assets/background.png")} style={estilos.container}>
+      {/* Cabeçalho */}
       <View style={estilos.boxTopo}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={estilos.botaoVoltar}>
           <Icon name="arrow-back" size={30} color="#244282" />
@@ -126,6 +136,7 @@ export default function TelaProduto({navigation}) {
         </BlurView>
       </View>
 
+      {/* Corpo com a lista de produtos */}
       <View style={estilos.boxMeio}>
         <View style={estilos.tituloTabela}>
           <Text style={[estilos.textoHeaderTabela, {flex: 1}]}>Nome</Text>
@@ -165,6 +176,7 @@ export default function TelaProduto({navigation}) {
         </View>
       </View>
 
+      {/* Rodapé com o botão para adicionar produto */}
       <View style={estilos.boxInferior}>
         <TouchableOpacity
           style={estilos.botaoAdicionar}
@@ -177,6 +189,7 @@ export default function TelaProduto({navigation}) {
         </TouchableOpacity>
       </View>
 
+      {/* Modal de Produto */}
       <ModalProduto
         modalVisivel={modalVisivel}
         setModalVisivel={setModalVisivel}
