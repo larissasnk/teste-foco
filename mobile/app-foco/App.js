@@ -2,7 +2,7 @@ import React from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from "@react-navigation/stack";
 
-// Importando as telas
+
 import HomeScreen from "./app/screens/HomeScreen";
 import EstabelecimentoScreen from "./app/screens/EstabelecimentoScreen";
 import ProdutoScreen from "./app/screens/ProdutoScreen";
