@@ -14,7 +14,6 @@ class VendaTest extends TestCase
 
     public function test_criar_venda()
     {
-        // Cria um estabelecimento e produtos no banco de dados de teste primeiro
         $estabelecimento = Estabelecimento::factory()->create();
         $produto1 = Produto::factory()->create(['preco' => 30]);
         $produto2 = Produto::factory()->create(['preco' => 5]);
@@ -49,7 +48,7 @@ class VendaTest extends TestCase
 
     public function test_listar_vendas()
     {
-        $venda = Venda::factory()->create(); // Criando uma venda
+        $venda = Venda::factory()->create(); 
 
         $response = $this->getJson("/api/vendas");
 
@@ -61,7 +60,7 @@ class VendaTest extends TestCase
 
     public function test_atualizar_venda()
     {
-        $venda = Venda::factory()->create(); // Criando uma venda
+        $venda = Venda::factory()->create(); 
 
         $response = $this->putJson("/api/vendas/{$venda->id}", [
             'total' => 100,
@@ -80,11 +79,11 @@ class VendaTest extends TestCase
 
     public function test_deletar_venda()
     {
-        $venda = Venda::factory()->create(); // Criando uma venda
+        $venda = Venda::factory()->create(); 
     
         $response = $this->deleteJson("/api/vendas/{$venda->id}");
     
-        // Mudança do status esperado para 204
+
         $response->assertStatus(204);
     
         $this->assertDatabaseMissing('vendas', [
@@ -94,8 +93,8 @@ class VendaTest extends TestCase
 
     public function test_adicionar_produto_na_venda()
     {
-        $venda = Venda::factory()->create(); // Criação de uma venda usando o factory
-        $produto = Produto::factory()->create(); // Criação de um produto usando o factory
+        $venda = Venda::factory()->create(); 
+        $produto = Produto::factory()->create(); 
 
         $response = $this->postJson("/api/vendas/{$venda->id}/produtos", [
             'produto_id' => $produto->id,
@@ -112,8 +111,8 @@ class VendaTest extends TestCase
 
     public function test_atualizar_produto_na_venda()
     {
-        $venda = Venda::factory()->create(); // Criação de uma venda usando o factory
-        $produto = Produto::factory()->create(); // Criação de um produto usando o factory
+        $venda = Venda::factory()->create(); 
+        $produto = Produto::factory()->create(); 
 
         // Adiciona o produto inicialmente
         $venda->produtos()->attach($produto->id, [
@@ -137,8 +136,8 @@ class VendaTest extends TestCase
 
     public function test_remover_produto_da_venda()
     {
-        $venda = Venda::factory()->create(); // Criação de uma venda usando o factory
-        $produto = Produto::factory()->create(); // Criação de um produto usando o factory
+        $venda = Venda::factory()->create(); 
+        $produto = Produto::factory()->create();
 
         // Adiciona o produto inicialmente
         $venda->produtos()->attach($produto->id, [

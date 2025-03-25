@@ -1,0 +1,918 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API do Sistema de Vendas",
+        "description": "Documentação completa da API do sistema de vendas",
+        "contact": {
+            "name": "Equipe de Suporte",
+            "email": "suporte@sistema.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8989/api",
+            "description": "Servidor de Desenvolvimento"
+        }
+    ],
+    "paths": {
+        "/dashboard/totais": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Obter totais do sistema",
+                "description": "Retorna os totais de vendas, produtos, estabelecimentos e produtos vendidos",
+                "operationId": "e560d136c9e3b181c6346ecabd16bffd",
+                "responses": {
+                    "200": {
+                        "description": "Totais obtidos com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "vendas": 42,
+                                    "produtos": 15,
+                                    "estabelecimentos": 3,
+                                    "produtosVendidos": 128
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "error": "Erro ao recuperar totais."
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/estabelecimentos": {
+            "get": {
+                "tags": [
+                    "Estabelecimentos"
+                ],
+                "summary": "Listar todos os estabelecimentos",
+                "description": "Retorna todos os estabelecimentos cadastrados",
+                "operationId": "cd504df33ff89f0eb251b73a05eefac5",
+                "responses": {
+                    "200": {
+                        "description": "Lista de estabelecimentos",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "nome": "Restaurante do Zé",
+                                        "endereco": "Rua das Flores, 123",
+                                        "created_at": "2023-01-01T00:00:00.000000Z"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "nome": "Mercado Bom Preço",
+                                        "endereco": "Avenida Principal, 456",
+                                        "created_at": "2023-01-01T00:00:00.000000Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Estabelecimentos"
+                ],
+                "summary": "Criar novo estabelecimento",
+                "description": "Cadastra um novo estabelecimento no sistema",
+                "operationId": "75c3ef0a66ff06d6a453103f72c60f19",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nome",
+                                    "endereco"
+                                ],
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Loja de Eletrônicos"
+                                    },
+                                    "endereco": {
+                                        "type": "string",
+                                        "example": "Rua Tecnológica, 789"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Estabelecimento criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 3,
+                                    "nome": "Loja de Eletrônicos",
+                                    "endereco": "Rua Tecnológica, 789",
+                                    "created_at": "2023-01-01T00:00:00.000000Z"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Dados inválidos"
+                    }
+                }
+            }
+        },
+        "/estabelecimentos/{id}": {
+            "get": {
+                "tags": [
+                    "Estabelecimentos"
+                ],
+                "summary": "Obter detalhes de um estabelecimento",
+                "description": "Retorna os detalhes de um estabelecimento específico",
+                "operationId": "423ee6379b5ca63423e93e0e4cbd5293",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do estabelecimento",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes do estabelecimento",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 1,
+                                    "nome": "Restaurante do Zé",
+                                    "endereco": "Rua das Flores, 123",
+                                    "created_at": "2023-01-01T00:00:00.000000Z",
+                                    "updated_at": "2023-01-01T00:00:00.000000Z"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Estabelecimento não encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Estabelecimentos"
+                ],
+                "summary": "Atualizar estabelecimento",
+                "description": "Atualiza os dados de um estabelecimento existente",
+                "operationId": "68e00b4b0af7fbde0526da049383db57",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do estabelecimento",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dados para atualização",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Restaurante do Zé Atualizado"
+                                    },
+                                    "endereco": {
+                                        "type": "string",
+                                        "example": "Rua das Flores, 123 - Novo Endereço"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Estabelecimento atualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 1,
+                                    "nome": "Restaurante do Zé Atualizado",
+                                    "endereco": "Rua das Flores, 123 - Novo Endereço",
+                                    "updated_at": "2023-01-02T00:00:00.000000Z"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Estabelecimento não encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Estabelecimentos"
+                ],
+                "summary": "Remover estabelecimento",
+                "description": "Remove um estabelecimento do sistema",
+                "operationId": "75fa8f64d277683788daf09f0b391bf4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do estabelecimento",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Estabelecimento removido"
+                    },
+                    "404": {
+                        "description": "Estabelecimento não encontrado"
+                    }
+                }
+            }
+        },
+        "/produtos": {
+            "get": {
+                "tags": [
+                    "Produtos"
+                ],
+                "summary": "Listar todos os produtos",
+                "description": "Retorna todos os produtos cadastrados",
+                "operationId": "8c510a996e4442bc775d010c95aec272",
+                "responses": {
+                    "200": {
+                        "description": "Lista de produtos",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "estabelecimento_id": 1,
+                                        "nome": "Notebook Dell",
+                                        "preco": 4599.9,
+                                        "estoque": 15,
+                                        "created_at": "2023-01-01T00:00:00.000000Z"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "estabelecimento_id": 1,
+                                        "nome": "Mouse sem fio",
+                                        "preco": 89.9,
+                                        "estoque": 30,
+                                        "created_at": "2023-01-01T00:00:00.000000Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Produtos"
+                ],
+                "summary": "Criar novo produto",
+                "description": "Cadastra um novo produto no sistema",
+                "operationId": "7d71e0d77b03d6f1e24b2cad44ebb911",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "estabelecimento_id",
+                                    "nome",
+                                    "preco",
+                                    "estoque"
+                                ],
+                                "properties": {
+                                    "estabelecimento_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Teclado Mecânico"
+                                    },
+                                    "preco": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 199.9
+                                    },
+                                    "estoque": {
+                                        "type": "integer",
+                                        "example": 20
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Teclado mecânico RGB",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Produto criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 3,
+                                    "estabelecimento_id": 1,
+                                    "nome": "Teclado Mecânico",
+                                    "preco": 199.9,
+                                    "estoque": 20,
+                                    "descricao": "Teclado mecânico RGB",
+                                    "created_at": "2023-01-01T00:00:00.000000Z"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Dados inválidos"
+                    }
+                }
+            }
+        },
+        "/produtos/{id}": {
+            "get": {
+                "tags": [
+                    "Produtos"
+                ],
+                "summary": "Obter detalhes de um produto",
+                "description": "Retorna os detalhes de um produto específico",
+                "operationId": "1acb0218991f26ab652b47ac1857e979",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do produto",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes do produto",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 1,
+                                    "estabelecimento_id": 1,
+                                    "nome": "Notebook Dell",
+                                    "preco": 4599.9,
+                                    "estoque": 15,
+                                    "descricao": null,
+                                    "created_at": "2023-01-01T00:00:00.000000Z",
+                                    "updated_at": "2023-01-01T00:00:00.000000Z"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Produto não encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Produtos"
+                ],
+                "summary": "Atualizar produto",
+                "description": "Atualiza os dados de um produto existente",
+                "operationId": "96a7fff885acc9a5e9be4976e4a6b99a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do produto",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dados para atualização",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Notebook Dell Atualizado"
+                                    },
+                                    "preco": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 3999.9
+                                    },
+                                    "estoque": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Notebook Dell i5 16GB RAM",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Produto atualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 1,
+                                    "estabelecimento_id": 1,
+                                    "nome": "Notebook Dell Atualizado",
+                                    "preco": 3999.9,
+                                    "estoque": 10,
+                                    "descricao": "Notebook Dell i5 16GB RAM",
+                                    "updated_at": "2023-01-02T00:00:00.000000Z"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Produto não encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Produtos"
+                ],
+                "summary": "Remover produto",
+                "description": "Remove um produto do sistema",
+                "operationId": "f3b83c232309ac3d1f79d61424e15557",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do produto",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Produto removido"
+                    },
+                    "404": {
+                        "description": "Produto não encontrado"
+                    }
+                }
+            }
+        },
+        "/vendas": {
+            "get": {
+                "tags": [
+                    "Vendas"
+                ],
+                "summary": "Listar todas as vendas",
+                "operationId": "917e59add57a1a5090b15bc8f3837078",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "estabelecimento_id": 1,
+                                        "total": 150.5,
+                                        "created_at": "2023-01-01T00:00:00.000000Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Vendas"
+                ],
+                "summary": "Criar nova venda",
+                "operationId": "8cb433988117c65a7d31921ef5ba6880",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {},
+                            "example": {
+                                "estabelecimento_id": 1,
+                                "produtos": [
+                                    {
+                                        "id": 1,
+                                        "quantidade": 2
+                                    },
+                                    {
+                                        "id": 2,
+                                        "quantidade": 1
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Venda criada",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 1,
+                                    "estabelecimento_id": 1,
+                                    "total": 150.5,
+                                    "created_at": "2023-01-01T00:00:00.000000Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/vendas/{id}": {
+            "get": {
+                "tags": [
+                    "Vendas"
+                ],
+                "summary": "Obter venda específica",
+                "operationId": "ff765bd4a560869779a49b072239d234",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 1,
+                                    "estabelecimento_id": 1,
+                                    "total": 150.5,
+                                    "created_at": "2023-01-01T00:00:00.000000Z",
+                                    "produtos": [
+                                        {
+                                            "id": 1,
+                                            "nome": "Produto A",
+                                            "pivot": {
+                                                "quantidade": 2,
+                                                "preco_unitario": 50,
+                                                "subtotal": 100
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Vendas"
+                ],
+                "summary": "Atualizar venda",
+                "operationId": "ab0972a9975082bbe3c7965ad1a85708",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {},
+                            "example": {
+                                "total": 160,
+                                "taxa": 10,
+                                "desconto": 5
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Venda atualizada",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 1,
+                                    "estabelecimento_id": 1,
+                                    "total": 160,
+                                    "taxa": 10,
+                                    "desconto": 5,
+                                    "updated_at": "2023-01-02T00:00:00.000000Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Vendas"
+                ],
+                "summary": "Remover venda",
+                "operationId": "0512f09401c32b23c8d530b2801c5c69",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Venda removida"
+                    }
+                }
+            }
+        },
+        "/vendas/{venda_id}/produtos": {
+            "post": {
+                "tags": [
+                    "VendaProdutos"
+                ],
+                "summary": "Adicionar produto à venda",
+                "description": "Adiciona um produto a uma venda existente",
+                "operationId": "9ddec8f1f00cf50a81f2a6543d7e3904",
+                "parameters": [
+                    {
+                        "name": "venda_id",
+                        "in": "path",
+                        "description": "ID da venda",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "produto_id",
+                                    "quantidade"
+                                ],
+                                "properties": {
+                                    "produto_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "quantidade": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Produto adicionado à venda",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 1,
+                                    "estabelecimento_id": 1,
+                                    "total": 100,
+                                    "produtos": [
+                                        {
+                                            "id": 1,
+                                            "nome": "Produto A",
+                                            "pivot": {
+                                                "quantidade": 2,
+                                                "preco_unitario": 50,
+                                                "subtotal": 100
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Venda ou produto não encontrado"
+                    }
+                }
+            }
+        },
+        "/vendas/{venda_id}/produtos/{produto_id}": {
+            "put": {
+                "tags": [
+                    "VendaProdutos"
+                ],
+                "summary": "Atualizar produto na venda",
+                "description": "Atualiza a quantidade de um produto em uma venda",
+                "operationId": "90a74145404636ff35600f564d5ee278",
+                "parameters": [
+                    {
+                        "name": "venda_id",
+                        "in": "path",
+                        "description": "ID da venda",
+                        "required": true,
+                        "example": 1
+                    },
+                    {
+                        "name": "produto_id",
+                        "in": "path",
+                        "description": "ID do produto",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "quantidade"
+                                ],
+                                "properties": {
+                                    "quantidade": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Produto atualizado na venda",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 1,
+                                    "estabelecimento_id": 1,
+                                    "total": 150,
+                                    "produtos": [
+                                        {
+                                            "id": 1,
+                                            "nome": "Produto A",
+                                            "pivot": {
+                                                "quantidade": 3,
+                                                "preco_unitario": 50,
+                                                "subtotal": 150
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Venda ou produto não encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "VendaProdutos"
+                ],
+                "summary": "Remover produto da venda",
+                "description": "Remove um produto de uma venda existente",
+                "operationId": "b86586914d78808c39529ea1d3ca86ed",
+                "parameters": [
+                    {
+                        "name": "venda_id",
+                        "in": "path",
+                        "description": "ID da venda",
+                        "required": true,
+                        "example": 1
+                    },
+                    {
+                        "name": "produto_id",
+                        "in": "path",
+                        "description": "ID do produto",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Produto removido da venda",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "id": 1,
+                                    "estabelecimento_id": 1,
+                                    "total": 0,
+                                    "produtos": []
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Venda ou produto não encontrado"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Dashboard",
+            "description": "Operações de dashboard e relatórios"
+        },
+        {
+            "name": "Estabelecimentos",
+            "description": "Operações com estabelecimentos"
+        },
+        {
+            "name": "Produtos",
+            "description": "Operações com produtos"
+        },
+        {
+            "name": "Vendas",
+            "description": "Operações com vendas"
+        },
+        {
+            "name": "VendaProdutos",
+            "description": "Operações com produtos de vendas"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "Insira o token no formato: Bearer {token}"
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ]
+}

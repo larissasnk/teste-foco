@@ -15,6 +15,8 @@ $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
+defined('API_HOST') || define('API_HOST', env('API_HOST', 'http://localhost:8989'));
+
 /*
 |--------------------------------------------------------------------------
 | Bind Important Interfaces

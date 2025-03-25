@@ -3,6 +3,8 @@ version: "3.7"
 services:
     # image project
     app:
+        environment:
+            - SWAGGER_API_HOST=http://localhost:8989
         build:
             context: .
             dockerfile: Dockerfile
@@ -14,6 +16,7 @@ services:
             - redis
         networks:
             - laravel
+    
 
     # nginx
     nginx:
