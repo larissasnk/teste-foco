@@ -5,11 +5,15 @@ import ButtonCustom from "../components/ButtonCustom";
 import {useFonts} from "expo-font";
 
 export default function HomeScreen({navigation}) {
+  console.log("HomeScreen carregada"); // Log para indicar que a tela foi carregada
+
+  // Carregamento da fonte personalizada
   const [fontsLoaded] = useFonts({
     CoreSansD65Heavy: require("../../assets/fonts/CoreSansD65Heavy.otf")
   });
 
   if (!fontsLoaded) {
+    console.log("Fonte ainda não carregada"); // Log para indicar que a fonte ainda está carregando
     return null;
   }
 
@@ -24,11 +28,37 @@ export default function HomeScreen({navigation}) {
       </View>
       <Image source={require("../../assets/linha.png")} style={styles.lineImage} />
       <View style={styles.boxMid}>
-        <ButtonCustom title="Gerenciar Estabelecimentos" onPress={() => navigation.navigate("Estabelecimento")} />
-        <ButtonCustom title="Gerenciar Produtos" onPress={() => navigation.navigate("Produto")} />
-        <ButtonCustom title="Gerenciar Vendas" onPress={() => navigation.navigate("ListaVendas")} />
+        {/* Botões para navegação entre as telas */}
+        <ButtonCustom
+          title="Gerenciar Estabelecimentos"
+          onPress={() => {
+            console.log("Navegando para Gerenciar Estabelecimentos"); 
+            navigation.navigate("Estabelecimento");
+          }}
+        />
+        <ButtonCustom
+          title="Gerenciar Produtos"
+          onPress={() => {
+            console.log("Navegando para Gerenciar Produtos");
+            navigation.navigate("Produto");
+          }}
+        />
+        <ButtonCustom
+          title="Gerenciar Vendas"
+          onPress={() => {
+            console.log("Navegando para Gerenciar Vendas");
+            navigation.navigate("ListaVendas");
+          }}
+        />
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ProdutoVenda")}>
+        {/* Botão adicional para realizar vendas */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            console.log("Navegando para Realizar Venda");
+            navigation.navigate("ProdutoVenda");
+          }}
+        >
           <Text style={styles.buttonText}>Realizar Venda</Text>
         </TouchableOpacity>
       </View>
@@ -76,7 +106,7 @@ const styles = StyleSheet.create({
     fontFamily: "CoreSansD65Heavy",
     fontSize: 45,
     color: "#f2cb31",
-    textShadowColor: "#000", 
+    textShadowColor: "#000",
     textShadowOffset: {width: 1, height: 1},
     textShadowRadius: 5
   },
@@ -106,11 +136,11 @@ const styles = StyleSheet.create({
     width: "75%",
     height: 50,
     marginBottom: 17,
-    shadowColor: "#000", 
-    shadowOffset: {width: 0, height: 4}, 
-    shadowOpacity: 0.3, 
-    shadowRadius: 10, 
-    elevation: 5, 
+    shadowColor: "#000",
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
     marginTop: 60
   },
   buttonText: {
