@@ -14,7 +14,7 @@ No terminal, digite os seguintes comandos:
 node -v
 npm -v
 
-Se não estiver faça a instalação
+Se não tiver faça a instalação e siga os passos
 
 ### 1. Clone o Repositório
 
