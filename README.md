@@ -1,4 +1,4 @@
-#Deploy da aplicação
+# Deploy da aplicação
 
 ## Passo a Passo
 
@@ -10,12 +10,12 @@ Antes de começar, verifique se você tem o **Node.js** e o **npm** instalados n
 
 No terminal, digite os seguintes comandos:
 
-```bash
+````bash
 node -v
 npm -v
-``
+````
 
 Clone Repositório
-```sh
+````sh
 git clone https://github.com/larissasnk/teste-foco.git
-```
+````
