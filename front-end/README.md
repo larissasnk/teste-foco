@@ -1,4 +1,4 @@
-# Setup Front-End Web com React, Vite, TypeScript e Tailwind CSS 4
+# Setup Front-End Web com React
 
 ## Passo a Passo
 
