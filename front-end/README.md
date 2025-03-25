@@ -7,20 +7,20 @@ Acesse as pastas
 ```bash
 cd teste-foco
 cd front-end
-``
+````
 
 instale as dependências do projeto
 
-```bash
+````bash
 npm install
-``
+````
 
 Após instalar as dependências, inicie o projeto com o comando:
 
-```bash
+````bash
 npm run dev
-``
+````
 
 Acesse o projeto
-[http://localhost:5173](http://localhost:5173)
+http://localhost:5173
 
