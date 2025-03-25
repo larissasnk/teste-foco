@@ -1,42 +1,75 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Alert, ImageBackground} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
 
 export default function VendaScreen({route, navigation}) {
   const {
-    cart: carrinho = [],
-    quantities: quantidades = {},
+    carrinho: carrinho = [],
+    quantidade: quantidades = {},
     subtotal: subtotalParam = 0,
-    estabelecimentoSelecionado
+    estabelecimentoSelecionado,
+    taxa: taxaEditada = 0,
+    desconto: descontoEditado = 0,
+    produtos: produtosAtualizados = [],
+    vendaId
   } = route.params || {};
 
   const subtotal = parseFloat(subtotalParam);
 
-  const [taxa, setTaxa] = useState(0);
-  const [desconto, setDesconto] = useState(0);
+  const [taxa, setTaxa] = useState(taxaEditada);
+  const [desconto, setDesconto] = useState(descontoEditado);
   const [carregando, setCarregando] = useState(false);
 
+  // Efetua a alteração das taxas e descontos quando as edições são feitas
+  useEffect(() => {
+    if (taxaEditada || descontoEditado) {
+      setTaxa(taxaEditada);
+      setDesconto(descontoEditado);
+    }
+  }, [taxaEditada, descontoEditado]);
+
+  // Função para calcular o total da venda considerando taxa e desconto
   const calcularTotal = () => {
     const valorTaxa = (subtotal * taxa) / 100;
     const valorDesconto = (subtotal * desconto) / 100;
     const total = subtotal + valorTaxa - valorDesconto;
+    console.log(`Subtotal: R$ ${subtotal}, Taxa: ${taxa}%, Desconto: ${desconto}% -> Total: R$ ${total.toFixed(2)}`);
     return total.toFixed(2);
   };
 
-  const finalizarVenda = async () => {
+  // Função de validação dos campos
+  const validarCampos = () => {
     if (!estabelecimentoSelecionado) {
       Alert.alert("Erro", "Selecione um estabelecimento antes de continuar.");
-      return;
+      return false;
     }
 
     if (carrinho.length === 0 || !carrinho.some(item => item.quantidade > 0)) {
       Alert.alert("Erro", "Adicione pelo menos um produto com 1 unidade ao carrinho.");
-      return;
+      return false;
     }
+
+    if (isNaN(taxa) || taxa < 0) {
+      Alert.alert("Erro", "Insira um valor válido para a Taxa.");
+      return false;
+    }
+
+    if (isNaN(desconto) || desconto < 0) {
+      Alert.alert("Erro", "Insira um valor válido para o Desconto.");
+      return false;
+    }
+
+    return true;
+  };
+
+  // Função para finalizar a venda, incluindo lógica de envio para o servidor
+  const finalizarVenda = async () => {
+    if (!validarCampos()) return;
 
     setCarregando(true);
 
+    // Dados da venda
     const dadosVenda = {
       estabelecimento_id: estabelecimentoSelecionado,
       produtos: carrinho.map(item => ({
@@ -45,13 +78,32 @@ export default function VendaScreen({route, navigation}) {
       })),
       taxa: taxa,
       desconto: desconto,
-      total: calcularTotal()
+      total: parseFloat(calcularTotal())
     };
 
     try {
-      const resposta = await axios.post("http://172.23.96.1:8989/api/vendas", dadosVenda);
+      let respostaVenda;
+      console.log("Enviando dados para o servidor: ", dadosVenda);
 
-      if (resposta.status === 200 || resposta.status === 201) {
+      // Verifica se estamos editando ou criando uma nova venda
+      if (vendaId) {
+        respostaVenda = await axios.put(`http://172.23.96.1:8989/api/vendas/${vendaId}`, dadosVenda);
+      } else {
+        respostaVenda = await axios.post("http://172.23.96.1:8989/api/vendas", dadosVenda);
+      }
+
+      // Verifica se a resposta foi bem-sucedida
+      if (respostaVenda.status === 200 || respostaVenda.status === 201) {
+        console.log("Venda registrada com sucesso!");
+
+        // Atualiza o estoque dos produtos vendidos
+        for (const item of carrinho) {
+          await axios.put(`http://172.23.96.1:8989/api/produtos/${item.id}`, {
+            quantidade: item.quantidade
+          });
+          console.log(`Produto ${item.id} atualizado no estoque`);
+        }
+
         Alert.alert("Venda finalizada!", `Venda registrada com sucesso!\nTotal: R$ ${calcularTotal()}`);
         navigation.navigate("ListaVendas");
       } else {
@@ -77,7 +129,7 @@ export default function VendaScreen({route, navigation}) {
         </View>
 
         <View style={estilos.secaoProdutos}>
-          {carrinho && carrinho.length > 0 ? (
+          {carrinho.length > 0 ? (
             carrinho.map((produto, index) => (
               <View key={index} style={estilos.itemProduto}>
                 <View style={estilos.cabecalhoProduto}>
@@ -93,7 +145,6 @@ export default function VendaScreen({route, navigation}) {
         </View>
 
         <View style={estilos.sessao}>
-          {/* Exibe o Subtotal */}
           <View style={estilos.secaoSubtotal}>
             <Text style={estilos.textoSubtotal}>Subtotal: R$ {subtotal.toFixed(2)}</Text>
           </View>

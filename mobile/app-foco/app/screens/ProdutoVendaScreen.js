@@ -6,13 +6,15 @@ import {BlurView} from "expo-blur";
 import ItemCarrinho from "../components/ItemCarrinho";
 
 export default function TelaProdutoVenda({navigation, route}) {
-  const {taxa, desconto, produtos: produtosVenda, venda} = route.params || {};
+  const {taxa: taxaEditada = 0, desconto: descontoEditado = 0, produtos: produtosVenda, venda} = route.params || {};
   const [quantidades, setQuantidades] = useState({});
   const [carrinho, setCarrinho] = useState([]);
   const [estabelecimentoSelecionado, setEstabelecimentoSelecionado] = useState("");
   const [produtos, setProdutos] = useState([]);
   const [estabelecimentos, setEstabelecimentos] = useState([]);
   const [carregando, setCarregando] = useState(true);
+  const [taxa, setTaxa] = useState(taxaEditada);
+  const [desconto, setDesconto] = useState(descontoEditado);
 
   const URL_API_PRODUTOS = "http://172.23.96.1:8989/api/produtos";
   const URL_API_ESTABELECIMENTOS = "http://172.23.96.1:8989/api/estabelecimentos";
@@ -22,15 +24,21 @@ export default function TelaProdutoVenda({navigation, route}) {
   useEffect(() => {
     const buscarDados = async () => {
       try {
+        console.log("Buscando dados dos produtos e estabelecimentos...");
+
         const respostaProdutos = await fetch(URL_API_PRODUTOS);
         const dadosProdutos = await respostaProdutos.json();
         setProdutos(dadosProdutos);
+        console.log("Produtos carregados:", dadosProdutos);
 
         const respostaEstabelecimentos = await fetch(URL_API_ESTABELECIMENTOS);
         const dadosEstabelecimentos = await respostaEstabelecimentos.json();
         setEstabelecimentos(dadosEstabelecimentos);
+        console.log("Estabelecimentos carregados:", dadosEstabelecimentos);
 
         if (isEditarVenda) {
+          console.log("Editando venda, configurando carrinho...");
+
           const quantidadesIniciais = {};
           const carrinhoInicial = produtosVenda.map(produto => {
             quantidadesIniciais[produto.id] = produto.quantidade;
@@ -42,12 +50,15 @@ export default function TelaProdutoVenda({navigation, route}) {
           });
           setQuantidades(quantidadesIniciais);
           setCarrinho(carrinhoInicial);
-          setEstabelecimentoSelecionado(venda.estabelecimento_id); 
+          setEstabelecimentoSelecionado(venda.estabelecimento_id);
+
+          console.log("Carrinho inicial:", carrinhoInicial);
         }
       } catch (erro) {
         console.error("Erro ao buscar dados da API", erro);
       } finally {
-        setCarregando(false); 
+        setCarregando(false);
+        console.log("Carregamento completo.");
       }
     };
 
@@ -66,13 +77,16 @@ export default function TelaProdutoVenda({navigation, route}) {
         } else {
           carrinhoAtualizado.push({id: produtoId, quantidade: 1});
         }
+        console.log("Carrinho atualizado após aumento:", carrinhoAtualizado);
         return carrinhoAtualizado;
       });
       setProdutos(prevProdutos =>
         prevProdutos.map(produto => (produto.id === produtoId ? {...produto, estoque: produto.estoque - 1} : produto))
       );
+      console.log(`Quantidade do produto ${produtoId} aumentada para ${quantidadeAtual + 1}`);
     } else {
       Alert.alert("Estoque insuficiente");
+      console.log(`Erro: Estoque insuficiente para o produto ${produtoId}`);
     }
   };
 
@@ -86,6 +100,7 @@ export default function TelaProdutoVenda({navigation, route}) {
       setProdutos(prevProdutos =>
         prevProdutos.map(produto => (produto.id === produtoId ? {...produto, estoque: produto.estoque + 1} : produto))
       );
+      console.log(`Quantidade do produto ${produtoId} diminuída para ${quantidadeAtual - 1}`);
     }
   };
 
@@ -97,41 +112,48 @@ export default function TelaProdutoVenda({navigation, route}) {
       return total + preco * quantidade;
     }, 0);
 
-    const totalImposto = (subtotal * (taxa || 0)) / 100;
-    const totalDesconto = (subtotal * (desconto || 0)) / 100;
-    const total = subtotal + totalImposto - totalDesconto;
-    return total.toFixed(2);
+    const total = subtotal.toFixed(2);
+    console.log("Total calculado:", total);
+    return total;
   };
 
   const salvarVenda = () => {
     if (!estabelecimentoSelecionado) {
       Alert.alert("Erro", "Selecione um estabelecimento antes de continuar.");
+      console.log("Erro: Estabelecimento não selecionado.");
       return;
     }
 
     if (carrinho.length === 0 || !carrinho.some(item => item.quantidade > 0)) {
       Alert.alert("Erro", "Adicione pelo menos um produto no carrinho.");
+      console.log("Erro: Carrinho vazio.");
       return;
     }
 
     const dadosVenda = {
-      cart: carrinho.map(item => {
+      carrinho: carrinho.map(item => {
         const produto = produtos.find(p => p.id === item.id);
         return {
           id: item.id,
           nome: produto?.nome || "Produto Desconhecido",
           preco: produto?.preco ? parseFloat(produto.preco) : 0,
-          quantidade: item.quantidade
+          quantidade: item.quantidade,
+          estoque: produto?.estoque || 0
         };
       }),
-      quantities: quantidades,
+      quantidade: quantidades,
       subtotal: calcularTotal(),
-      estabelecimentoSelecionado
+      estabelecimentoSelecionado,
+      taxa,
+      desconto,
+      produtos,
+      vendaId: venda?.id
     };
 
-    console.log("Dados passados para VendaScreen:", dadosVenda);
+    console.log("Dados da venda a serem enviados:", dadosVenda);
 
     navigation.navigate("Venda", dadosVenda);
+    console.log("Navegando para a tela de Venda.");
   };
 
   return (

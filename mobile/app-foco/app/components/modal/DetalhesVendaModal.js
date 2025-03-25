@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from "react";
-import {View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView} from "react-native";
+import {View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView, Alert} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
 
-export default function DetalhesVendaModal({visivel, venda, fecharModal, navigation}) {
+export default function DetalhesVendaModal({visivel, venda, fecharModal, navigation, atualizarVendas}) {
   const [nomeEstabelecimento, setNomeEstabelecimento] = useState(null);
 
   // Buscar o nome do estabelecimento a partir do id
@@ -21,6 +21,45 @@ export default function DetalhesVendaModal({visivel, venda, fecharModal, navigat
       buscarEstabelecimento();
     }
   }, [venda]);
+
+ const excluirVenda = async () => {
+   Alert.alert(
+     "Confirmar Exclusão",
+     "Tem certeza que deseja excluir esta venda?",
+     [
+       {
+         text: "Cancelar",
+         style: "cancel"
+       },
+       {
+         text: "Excluir",
+         style: "destructive",
+         onPress: async () => {
+           try {
+             // Deleta a venda
+             await axios.delete(`http://172.23.96.1:8989/api/vendas/${venda.id}`);
+
+             // Fecha o modal
+             fecharModal();
+
+             // Atualiza a lista de vendas
+             if (atualizarVendas) {
+               atualizarVendas();
+             }
+
+             // Exibe o alert de sucesso
+             Alert.alert("Sucesso", "Venda excluída com sucesso.");
+           } catch (erro) {
+             console.error("Erro ao excluir a venda:", erro);
+             Alert.alert("Erro", "Não foi possível excluir a venda.");
+           }
+         }
+       }
+     ],
+     {cancelable: true}
+   );
+ };
+
 
   if (!venda) return null;
 
@@ -64,24 +103,30 @@ export default function DetalhesVendaModal({visivel, venda, fecharModal, navigat
             </View>
           </ScrollView>
 
-          <TouchableOpacity
-            style={estilos.botaoEditar}
-            onPress={() => {
-              fecharModal();
-              navigation.navigate("ProdutoVenda", {
-                venda: venda,
-                produtos: venda.produtos.map(p => ({
-                  ...p,
-                  quantidade: p.pivot.quantidade, 
-                  preco: p.pivot.preco_unitario 
-                })),
-                taxa: venda.taxa,
-                desconto: venda.desconto
-              });
-            }}
-          >
-            <Text style={estilos.textoBotao}>Editar Venda</Text>
-          </TouchableOpacity>
+          <View style={estilos.botaoContainer}>
+            <TouchableOpacity style={estilos.botaoExcluir} onPress={excluirVenda}>
+              <Text style={estilos.textoBotao}>Excluir</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={estilos.botaoEditar}
+              onPress={() => {
+                fecharModal();
+                navigation.navigate("ProdutoVenda", {
+                  venda: venda,
+                  produtos: venda.produtos.map(p => ({
+                    ...p,
+                    quantidade: p.pivot.quantidade,
+                    preco: p.pivot.preco_unitario
+                  })),
+                  taxa: venda.taxa,
+                  desconto: venda.desconto
+                });
+              }}
+            >
+              <Text style={estilos.textoBotao}>Editar</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </TouchableOpacity>
     </Modal>
@@ -93,7 +138,7 @@ const estilos = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.6)" 
+    backgroundColor: "rgba(0, 0, 0, 0.6)"
   },
   modalConteudo: {
     width: "90%",
@@ -187,14 +232,24 @@ const estilos = StyleSheet.create({
     fontWeight: "bold",
     color: "#27AE60"
   },
+  botaoContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 15
+  },
   botaoEditar: {
     backgroundColor: "#244282",
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
-    alignSelf: "center",
-    marginTop: 15,
-    width: "60%"
+    width: "48%"
+  },
+  botaoExcluir: {
+    backgroundColor: "#E74C3C",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    width: "48%"
   },
   textoBotao: {
     color: "#fff",

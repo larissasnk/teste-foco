@@ -26,6 +26,8 @@ export default function ListaVendasScreen({navigation}) {
     buscarVendas();
   }, []);
 
+  
+
   const abrirModal = venda => {
     setVendaSelecionada(venda);
     setModalVisivel(true);
@@ -34,6 +36,15 @@ export default function ListaVendasScreen({navigation}) {
   const fecharModal = () => {
     setModalVisivel(false);
     setVendaSelecionada(null);
+  };
+
+  const atualizarVendas = async () => {
+    try {
+      const resposta = await axios.get("http://172.23.96.1:8989/api/vendas/");
+      setVendas(resposta.data);
+    } catch (erro) {
+      console.error("Erro ao carregar vendas:", erro);
+    }
   };
 
   return (
@@ -65,6 +76,7 @@ export default function ListaVendasScreen({navigation}) {
         venda={vendaSelecionada}
         fecharModal={fecharModal}
         navigation={navigation}
+        atualizarVendas={atualizarVendas} 
       />
     </ImageBackground>
   );
